@@ -1,0 +1,27 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "adfcovid19data"
+		},
+		"LS_ADLS_accountKey": {
+			"value": ""
+		},
+		"LS_COSMOSDB_connectionString": {
+			"value": ""
+		},
+		"LS_ONPREM_connectionString": {
+			"value": ""
+		},
+		"LS_OnPrem_New_connectionString": {
+			"value": ""
+		},
+		"LS_SQLDB_connectionString": {
+			"value": ""
+		},
+		"LS_ADLS_properties_typeProperties_url": {
+			"value": "https://covid19wfe3letvu23hy.dfs.core.windows.net/"
+		}
+	}
+}
