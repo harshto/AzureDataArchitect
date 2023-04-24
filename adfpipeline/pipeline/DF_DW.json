@@ -223,7 +223,7 @@
 						"parameters": {
 							"ContainerName": "workspace",
 							"FolderName": "ODS",
-							"FileName": "covidpolicy.parquet"
+							"FileName": "Covid19_Metrics.parquet"
 						}
 					}
 				],
