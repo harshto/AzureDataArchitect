@@ -20,6 +20,9 @@
 		"LS_SQLDB_connectionString": {
 			"value": ""
 		},
+		"LS_Synapse_connectionString": {
+			"value": ""
+		},
 		"LS_ADLS_properties_typeProperties_url": {
 			"value": "https://covid19wfe3letvu23hy.dfs.core.windows.net/"
 		},

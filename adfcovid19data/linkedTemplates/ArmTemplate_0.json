@@ -19,6 +19,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_SQLDB'"
 		},
+		"LS_Synapse_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_Synapse'"
+		},
 		"LS_ONPREM_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_ONPREM'"
@@ -86,6 +90,19 @@
 			"properties": {
 				"type": "SelfHosted",
 				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/LS_Synapse')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('LS_Synapse_connectionString')]"
+				}
 			},
 			"dependsOn": []
 		},
@@ -427,6 +444,41 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/integrationRuntimes/Selfhosted')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DS_Synapse')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "LS_Synapse",
+					"type": "LinkedServiceReference"
+				},
+				"parameters": {
+					"SchemaName": {
+						"type": "string"
+					},
+					"TableName": {
+						"type": "string"
+					}
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": {
+						"value": "@dataset().SchemaName",
+						"type": "Expression"
+					},
+					"table": {
+						"value": "@dataset().TableName",
+						"type": "Expression"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/LS_Synapse')]"
 			]
 		},
 		{
@@ -1973,142 +2025,13 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/DF_ODS')]",
+			"name": "[concat(parameters('factoryName'), '/DF_DW')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
 			"properties": {
 				"activities": [
 					{
-						"name": "DF_Country",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Country",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"ADLSAZURESQLDB": {
-										"ContainerName": "workspace",
-										"FolderName": "AzureSQLdb",
-										"FileName": "Country.parquet"
-									},
-									"ADLSOnPremSQLServer": {
-										"ContainerName": "workspace",
-										"FolderName": "OnPremSQLServer",
-										"FileName": "Country.parquet"
-									},
-									"ADLSCountry": {
-										"ContainerName": "workspace",
-										"FolderName": "ODS",
-										"FileName": "Country.parquet"
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "DF_Dates",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Dates",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"ADLSAZURESQLDB": {
-										"ContainerName": "workspace",
-										"FolderName": "AzureSQLdb",
-										"FileName": "Dates.parquet"
-									},
-									"ADLSOnPremSQLServer": {
-										"ContainerName": "workspace",
-										"FolderName": "OnPremSQLServer",
-										"FileName": "Dates.parquet"
-									},
-									"ADLSDates": {
-										"ContainerName": "workspace",
-										"FolderName": "ODS",
-										"FileName": "Dates.parquet"
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "DF_Covid19_Metrix",
-						"type": "ExecuteDataFlow",
-						"dependsOn": [],
-						"policy": {
-							"timeout": "0.12:00:00",
-							"retry": 0,
-							"retryIntervalInSeconds": 30,
-							"secureOutput": false,
-							"secureInput": false
-						},
-						"userProperties": [],
-						"typeProperties": {
-							"dataflow": {
-								"referenceName": "DF_Covid19_metrix",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"ADLSAZURESQLDB": {
-										"ContainerName": "workspace",
-										"FolderName": "AzureSQLdb",
-										"FileName": "Covid19_Metrics.parquet"
-									},
-									"ADLSOnPremSQLServer": {
-										"ContainerName": "workspace",
-										"FolderName": "OnPremSQLServer",
-										"FileName": "Covid19_Metrics.parquet"
-									},
-									"ADLSCovid19Metrix": {
-										"ContainerName": "workspace",
-										"FolderName": "ODS",
-										"FileName": "Covid19_Metrics.parquet"
-									}
-								}
-							},
-							"staging": {},
-							"compute": {
-								"coreCount": 8,
-								"computeType": "General"
-							},
-							"traceLevel": "Fine"
-						}
-					},
-					{
-						"name": "DF_CovidPolicy",
+						"name": "Move Geography Data from ODS to DW",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -2132,23 +2055,17 @@
 								}
 							},
 							"sink": {
-								"type": "ParquetSink",
-								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
+								"type": "SqlDWSink",
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
 								},
-								"formatSettings": {
-									"type": "ParquetWriteSettings"
-								}
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
 							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
+							"enableStaging": false
 						},
 						"inputs": [
 							{
@@ -2156,45 +2073,24 @@
 								"type": "DatasetReference",
 								"parameters": {
 									"ContainerName": "workspace",
-									"FolderName": "Cosmosdb",
-									"FileName": "covidpolicy.parquet"
+									"FolderName": "ODS",
+									"FileName": "Country.parquet"
 								}
 							}
 						],
 						"outputs": [
 							{
-								"referenceName": "DS_PARQET",
+								"referenceName": "DS_Synapse",
 								"type": "DatasetReference",
 								"parameters": {
-									"ContainerName": "workspace",
-									"FolderName": "ODS",
-									"FileName": "covidpolicy.parquet"
+									"SchemaName": "dbo",
+									"TableName": "Geography"
 								}
 							}
 						]
-					}
-				],
-				"policy": {
-					"elapsedTimeMetric": {},
-					"cancelAfter": {}
-				},
-				"annotations": []
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/dataflows/DF_Country')]",
-				"[concat(variables('factoryId'), '/dataflows/DF_Dates')]",
-				"[concat(variables('factoryId'), '/dataflows/DF_Covid19_metrix')]",
-				"[concat(variables('factoryId'), '/datasets/DS_PARQET')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/DF_Onprem_ADLS')]",
-			"type": "Microsoft.DataFactory/factories/pipelines",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"activities": [
+					},
 					{
-						"name": "Copy data1",
+						"name": "Move DatesData from ODS to DW",
 						"type": "Copy",
 						"dependsOn": [],
 						"policy": {
@@ -2207,47 +2103,165 @@
 						"userProperties": [],
 						"typeProperties": {
 							"source": {
-								"type": "SqlServerSource",
-								"queryTimeout": "02:00:00",
-								"partitionOption": "None"
-							},
-							"sink": {
-								"type": "ParquetSink",
+								"type": "ParquetSource",
 								"storeSettings": {
-									"type": "AzureBlobFSWriteSettings"
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
 								},
 								"formatSettings": {
-									"type": "ParquetWriteSettings"
+									"type": "ParquetReadSettings"
 								}
 							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"typeConversion": true,
-								"typeConversionSettings": {
-									"allowDataTruncation": true,
-									"treatBooleanAsNumber": false
-								}
-							}
+							"sink": {
+								"type": "SqlDWSink",
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
+								},
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false
 						},
 						"inputs": [
 							{
-								"referenceName": "DS_Onprem_Sql",
+								"referenceName": "DS_PARQET",
+								"type": "DatasetReference",
+								"parameters": {
+									"ContainerName": "workspace",
+									"FolderName": "ODS",
+									"FileName": "Dates.parquet"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Synapse",
 								"type": "DatasetReference",
 								"parameters": {
 									"SchemaName": "dbo",
 									"TableName": "Dates"
 								}
 							}
-						],
-						"outputs": [
+						]
+					},
+					{
+						"name": "Move Policy Data to DW",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
+								},
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false
+						},
+						"inputs": [
 							{
 								"referenceName": "DS_PARQET",
 								"type": "DatasetReference",
 								"parameters": {
 									"ContainerName": "workspace",
-									"FolderName": "OnPremSQLServer",
-									"FileName": "Dates.parquet"
+									"FolderName": "ODS",
+									"FileName": "covidpolicy.parquet"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Synapse",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "dbo",
+									"TableName": "Policy"
+								}
+							}
+						]
+					},
+					{
+						"name": "Move Metrix Data from ODS to DW",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "ParquetSource",
+								"storeSettings": {
+									"type": "AzureBlobFSReadSettings",
+									"recursive": true,
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "ParquetReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"allowPolyBase": true,
+								"polyBaseSettings": {
+									"rejectValue": 0,
+									"rejectType": "value",
+									"useTypeDefault": true
+								},
+								"tableOption": "autoCreate",
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false
+						},
+						"inputs": [
+							{
+								"referenceName": "DS_PARQET",
+								"type": "DatasetReference",
+								"parameters": {
+									"ContainerName": "workspace",
+									"FolderName": "ODS",
+									"FileName": "covidpolicy.parquet"
+								}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DS_Synapse",
+								"type": "DatasetReference",
+								"parameters": {
+									"SchemaName": "dbo",
+									"TableName": "Metrix"
 								}
 							}
 						]
@@ -2260,8 +2274,8 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/DS_Onprem_Sql')]",
-				"[concat(variables('factoryId'), '/datasets/DS_PARQET')]"
+				"[concat(variables('factoryId'), '/datasets/DS_PARQET')]",
+				"[concat(variables('factoryId'), '/datasets/DS_Synapse')]"
 			]
 		}
 	]

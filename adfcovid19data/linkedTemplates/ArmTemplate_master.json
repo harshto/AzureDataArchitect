@@ -27,6 +27,10 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'LS_SQLDB'"
 		},
+		"LS_Synapse_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'LS_Synapse'"
+		},
 		"LS_ADLS_properties_typeProperties_url": {
 			"type": "string",
 			"defaultValue": "https://covid19wfe3letvu23hy.dfs.core.windows.net/"
@@ -67,6 +71,9 @@
 					"LS_SQLDB_connectionString": {
 						"value": "[parameters('LS_SQLDB_connectionString')]"
 					},
+					"LS_Synapse_connectionString": {
+						"value": "[parameters('LS_Synapse_connectionString')]"
+					},
 					"LS_ONPREM_connectionString": {
 						"value": "[parameters('LS_ONPREM_connectionString')]"
 					},
@@ -79,6 +86,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "adfcovid19data_ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'adfcovid19data_ArmTemplate_0')]"
+			]
 		}
 	]
 }
