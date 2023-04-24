@@ -1,0 +1,49 @@
+{
+	"name": "DF_ODS",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Country",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Country",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"ADLSAZURESQLDB": {
+								"ContainerName": "workspace",
+								"FolderName": "AzureSQLdb",
+								"FileName": "Country.parquet"
+							},
+							"ADLSOnPremSQLServer": {
+								"ContainerName": "workspace",
+								"FolderName": "OnPremSQLServer",
+								"FileName": "Country.parquet"
+							},
+							"ADLSCountry": {
+								"ContainerName": "workspace",
+								"FolderName": "ODS",
+								"FileName": "Country.parquet"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			}
+		],
+		"annotations": []
+	}
+}
