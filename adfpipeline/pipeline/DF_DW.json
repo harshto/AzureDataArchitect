@@ -1,5 +1,5 @@
 {
-	"name": "DF_DIM_Location",
+	"name": "DF_DW",
 	"properties": {
 		"activities": [
 			{
@@ -151,7 +151,9 @@
 							"rejectValue": 0,
 							"rejectType": "value",
 							"useTypeDefault": true
-						}
+						},
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false
 				},
@@ -208,7 +210,9 @@
 							"rejectValue": 0,
 							"rejectType": "value",
 							"useTypeDefault": true
-						}
+						},
+						"tableOption": "autoCreate",
+						"disableMetricsCollection": false
 					},
 					"enableStaging": false
 				},
