@@ -25,7 +25,7 @@
 						"referenceName": "DS_PARQET",
 						"type": "DatasetReference"
 					},
-					"name": "ADLSCountry",
+					"name": "ADLSCovid19Metrix",
 					"rejectedDataLinkedService": {
 						"referenceName": "LS_ADLS",
 						"type": "LinkedServiceReference"
@@ -88,7 +88,7 @@
 				"     postCommands: [],",
 				"     skipDuplicateMapInputs: true,",
 				"     skipDuplicateMapOutputs: true,",
-				"     partitionBy('hash', 1)) ~> ADLSCountry"
+				"     partitionBy('hash', 1)) ~> ADLSCovid19Metrix"
 			]
 		}
 	}
