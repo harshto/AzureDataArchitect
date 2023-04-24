@@ -1,0 +1,197 @@
+{
+	"name": "DF_ODS",
+	"properties": {
+		"activities": [
+			{
+				"name": "DF_Country",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Country",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"ADLSAZURESQLDB": {
+								"ContainerName": "workspace",
+								"FolderName": "AzureSQLdb",
+								"FileName": "Country.parquet"
+							},
+							"ADLSOnPremSQLServer": {
+								"ContainerName": "workspace",
+								"FolderName": "OnPremSQLServer",
+								"FileName": "Country.parquet"
+							},
+							"ADLSCountry": {
+								"ContainerName": "workspace",
+								"FolderName": "ODS",
+								"FileName": "Country.parquet"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_Dates",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Dates",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"ADLSAZURESQLDB": {
+								"ContainerName": "workspace",
+								"FolderName": "AzureSQLdb",
+								"FileName": "Dates.parquet"
+							},
+							"ADLSOnPremSQLServer": {
+								"ContainerName": "workspace",
+								"FolderName": "OnPremSQLServer",
+								"FileName": "Dates.parquet"
+							},
+							"ADLSDates": {
+								"ContainerName": "workspace",
+								"FolderName": "ODS",
+								"FileName": "Dates.parquet"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_Covid19_Metrix",
+				"type": "ExecuteDataFlow",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"dataflow": {
+						"referenceName": "DF_Covid19_metrix",
+						"type": "DataFlowReference",
+						"datasetParameters": {
+							"ADLSAZURESQLDB": {
+								"ContainerName": "workspace",
+								"FolderName": "AzureSQLdb",
+								"FileName": "Covid19_Metrics.parquet"
+							},
+							"ADLSOnPremSQLServer": {
+								"ContainerName": "workspace",
+								"FolderName": "OnPremSQLServer",
+								"FileName": "Covid19_Metrics.parquet"
+							},
+							"ADLSCovid19Metrix": {
+								"ContainerName": "workspace",
+								"FolderName": "ODS",
+								"FileName": "Covid19_Metrics.parquet"
+							}
+						}
+					},
+					"compute": {
+						"coreCount": 8,
+						"computeType": "General"
+					},
+					"traceLevel": "Fine"
+				}
+			},
+			{
+				"name": "DF_CovidPolicy",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "ParquetReadSettings"
+						}
+					},
+					"sink": {
+						"type": "ParquetSink",
+						"storeSettings": {
+							"type": "AzureBlobFSWriteSettings"
+						},
+						"formatSettings": {
+							"type": "ParquetWriteSettings"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DS_PARQET",
+						"type": "DatasetReference",
+						"parameters": {
+							"ContainerName": "workspace",
+							"FolderName": "Cosmosdb",
+							"FileName": "covidpolicy.parquet"
+						}
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DS_PARQET",
+						"type": "DatasetReference",
+						"parameters": {
+							"ContainerName": "workspace",
+							"FolderName": "ODS",
+							"FileName": "covidpolicy.parquet"
+						}
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

@@ -1,0 +1,75 @@
+{
+	"name": "DF_Country",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "DS_PARQET",
+						"type": "DatasetReference"
+					},
+					"name": "ADLSAZURESQLDB"
+				},
+				{
+					"dataset": {
+						"referenceName": "DS_PARQET",
+						"type": "DatasetReference"
+					},
+					"name": "ADLSOnPremSQLServer"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "DS_PARQET",
+						"type": "DatasetReference"
+					},
+					"name": "ADLSCountry",
+					"rejectedDataLinkedService": {
+						"referenceName": "LS_ADLS",
+						"type": "LinkedServiceReference"
+					}
+				}
+			],
+			"transformations": [
+				{
+					"name": "union1"
+				}
+			],
+			"scriptLines": [
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> ADLSAZURESQLDB",
+				"source(output(",
+				"          Country as string,",
+				"          CountryCode as string,",
+				"          Latitude as decimal(10,5),",
+				"          Longitude as decimal(10,5)",
+				"     ),",
+				"     allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     ignoreNoFilesFound: false,",
+				"     format: 'parquet') ~> ADLSOnPremSQLServer",
+				"ADLSAZURESQLDB, ADLSOnPremSQLServer union(byName: true)~> union1",
+				"union1 sink(allowSchemaDrift: true,",
+				"     validateSchema: false,",
+				"     format: 'parquet',",
+				"     partitionFileNames:['Country.parquet'],",
+				"     umask: 0022,",
+				"     preCommands: [],",
+				"     postCommands: [],",
+				"     skipDuplicateMapInputs: true,",
+				"     skipDuplicateMapOutputs: true,",
+				"     partitionBy('hash', 1)) ~> ADLSCountry"
+			]
+		}
+	}
+}
